@@ -9,7 +9,7 @@ class Game:
         self.screen = pygame.display.set_mode((640,360))
         pygame.display.set_caption("Pong")
         self.clock = pygame.time.Clock()
-        self.font = pygame.font.Font("font/Super Mario Bros.ttf", 40) #insert retro font for score
+        self.font = pygame.font.Font("font/Super Mario Bros.ttf", 40) 
         self.active = True
         #Score
         self.left_score = 0
@@ -27,25 +27,15 @@ class Game:
         self.ball_surf = pygame.image.load("Pictures/Ball.png")
         self.ball_rect = self.ball_surf.get_rect(center=(320,180))
 
-        #Score
-        self.score_surf_left = self.font.render(str(self.left_score), False, "White")
-        self.score_rect_left = self.score_surf_left.get_rect(midtop = (280,20))
-        self.score_surf_right = self.font.render(str(self.right_score),False,"White")
-        self.score_rect_right = self.score_surf_right.get_rect(midtop = (360,20))
-
         #Player
-        global player_left
+        global player_left  #irwann global entfernen, is nicht gut
         global player_right
         player_left = Player(self.player_surf,self.left_player_rect)
         player_right = Player(self.player_surf,self.right_player_rect)
-        self.movement_left= [False, False]
-        self.movement_right = [False, False]
         
         #Ball
         global ball
-        ball = Ball(self.ball_surf,self.ball_rect)
-
-
+        ball = Ball(self.ball_surf,self.ball_rect)        
 
     def run(self):
         while True:
@@ -53,6 +43,17 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
+
+                if self.active:
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            print("pressed")
+                            self.active = False
+
+                if self.active == False:
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            self.active = True
                                 
             if self.active:
                 keys = pygame.key.get_pressed()
@@ -76,12 +77,40 @@ class Game:
                 self.screen.blit(self.player_surf,self.right_player_rect)
 
                 #Score
+                self.score_surf_left = self.font.render(str(self.left_score), False, "White")
+                self.score_rect_left = self.score_surf_left.get_rect(midtop = (250,20))
+                self.score_surf_right = self.font.render(str(self.right_score),False,"White")
+                self.score_rect_right = self.score_surf_right.get_rect(midtop = (390,20))
                 self.screen.blit(self.score_surf_left,self.score_rect_left)
                 self.screen.blit(self.score_surf_right,self.score_rect_right)
 
                 #Ball
                 self.screen.blit(self.ball_surf,self.ball_rect)
-                #ball.movement()
+                ball.movement()
+                #Ball collision with players
+                if self.ball_rect.colliderect(self.right_player_rect):
+                    ball.change_direc()
+                if self.ball_rect.colliderect(self.left_player_rect):
+                    ball.change_direc()
+                
+                #Ball out and someone scored
+                if self.ball_rect.x > 660:
+                    self.left_score += 1
+                    pygame.time.delay(500)
+                    self.ball_rect.center = (320,180)
+                    ball.change_direc()
+                if self.ball_rect.x < -20:
+                    self.right_score +=1
+                    pygame.time.delay(500)
+                    self.ball_rect.center = (320,180)
+                    ball.change_direc()
+
+                #Rects in the middle
+                pygame.draw.rect(self.screen, "grey", pygame.Rect(0,0,10,10))
+
+            else:
+                self.screen.fill("Black")
+
 
             pygame.display.update()
             self.clock.tick(60)

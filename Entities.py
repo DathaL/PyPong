@@ -14,14 +14,20 @@ class Player:
             self.player_rect.y += 3
 
 class Ball(Player):
+    direction ="right"
+
     def __init__(self, ball_surf, ball_rect):
         self.ball_surf = ball_surf
         self.ball_rect = ball_rect
 
-    #def movement(self):
-    #    direction = "x"
-    #    self.ball_rect.direction += 5
+    def movement(self):
+        if self.direction == "right":
+            self.ball_rect.x += 8
+        elif self.direction == "left":
+            self.ball_rect.x -= 8
 
-    #def collision(self):
-    #    if self.ball_rect.colliderect(self.player_rect):
-    #        direction ="y"
+    def change_direc(self):
+        if self.direction == "right":
+            self.direction = "left"
+        elif self.direction == "left":
+            self.direction = "right"
