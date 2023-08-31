@@ -2,6 +2,8 @@ import pygame
 from sys import exit
 from Entities import Player
 from Entities import Ball
+from random import randint
+
 
 class Game:
     def __init__(self):
@@ -25,7 +27,7 @@ class Game:
 
         #Ball
         self.ball_surf = pygame.image.load("Pictures/Ball.png")
-        self.ball_rect = self.ball_surf.get_rect(center=(320,180))
+        self.ball_rect = self.ball_surf.get_rect(center=(320,randint(10,350)))
 
         #Player
         global player_left  #irwann global entfernen, is nicht gut
@@ -33,9 +35,11 @@ class Game:
         player_left = Player(self.player_surf,self.left_player_rect)
         player_right = Player(self.player_surf,self.right_player_rect)
         
-        #Ball
+        #Ball class
         global ball
-        ball = Ball(self.ball_surf,self.ball_rect)        
+        ball = Ball(self.ball_surf,self.ball_rect)
+        ball.set_angle()
+
 
     def run(self):
         while True:
@@ -86,24 +90,32 @@ class Game:
 
                 #Ball
                 self.screen.blit(self.ball_surf,self.ball_rect)
-                ball.movement()
+                ball.start_mov()
+                    
                 #Ball collision with players
                 if self.ball_rect.colliderect(self.right_player_rect):
                     ball.change_direc()
+
                 if self.ball_rect.colliderect(self.left_player_rect):
                     ball.change_direc()
                 
+                #Ball collision with "Wall"
+                if self.ball_rect.bottom >= 360:
+                    ball.change_up_down()
+                if self.ball_rect.top <= 0:
+                    ball.change_up_down()
+
                 #Ball out and someone scored
                 if self.ball_rect.x > 660:
                     self.left_score += 1
-                    pygame.time.delay(500)
-                    self.ball_rect.center = (320,180)
+                    self.ball_rect.center = (320,randint(10,350))
                     ball.change_direc()
+                    ball.set_angle()
                 if self.ball_rect.x < -20:
                     self.right_score +=1
-                    pygame.time.delay(500)
-                    self.ball_rect.center = (320,180)
+                    self.ball_rect.center = (320,randint(10,350))
                     ball.change_direc()
+                    ball.set_angle()
 
                 #Rects in the middle
                 pygame.draw.rect(self.screen, "grey", pygame.Rect(0,0,10,10))
