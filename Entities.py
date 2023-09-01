@@ -31,7 +31,7 @@ class Ball(Player):
         else:
             self.up_down = 1
 
-    def start_mov(self):   
+    def movement(self):   
         if self.direction == "right":
             self.ball_rect.x += 5
             if self.up_down:

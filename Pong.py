@@ -11,8 +11,12 @@ class Game:
         self.screen = pygame.display.set_mode((640,360))
         pygame.display.set_caption("Pong")
         self.clock = pygame.time.Clock()
+
+        #Fonts
         self.font = pygame.font.Font("font/Super Mario Bros.ttf", 40) 
-        self.active = True
+        self.menu_font = pygame.font.Font("font/Super Mario Bros.ttf", 20) 
+
+        self.active = False
         #Score
         self.left_score = 0
         self.right_score = 0
@@ -20,6 +24,10 @@ class Game:
         #Images
         self.bg_surf = pygame.image.load("Pictures/background.png").convert()
 
+        #Menu text
+        self.title_surf = self.font.render("Pong",False,"White")
+        self.title_rect = self.title_surf.get_rect(center = (320,70))
+        self.menu_text = "     Press space to play \n\nControl left with W/S \nand right with Arrow UP/DOWN"
         #Player
         self.player_surf = pygame.image.load("Pictures/Player.png").convert_alpha()
         self.left_player_rect = self.player_surf.get_rect(center = (30,180))
@@ -48,16 +56,10 @@ class Game:
                     pygame.quit()
                     exit()
 
-                if self.active:
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_ESCAPE:
-                            print("pressed")
-                            self.active = False
-
-                if self.active == False:
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_ESCAPE:
-                            self.active = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        self.active = True
+                        print(self.active)
                                 
             if self.active:
                 keys = pygame.key.get_pressed()
@@ -90,7 +92,7 @@ class Game:
 
                 #Ball
                 self.screen.blit(self.ball_surf,self.ball_rect)
-                ball.start_mov()
+                ball.movement()
                     
                 #Ball collision with players
                 if self.ball_rect.colliderect(self.right_player_rect):
@@ -120,9 +122,23 @@ class Game:
                 #Rects in the middle
                 pygame.draw.rect(self.screen, "grey", pygame.Rect(0,0,10,10))
 
+                if self.left_score == 5:
+                    self.active = False
+                    self.menu_text = "Left player has won!"
+                if self.right_score == 5:
+                    self.active = False
+                    self.menu_text = "Right player has won!"
+
             else:
                 self.screen.fill("Black")
-
+                self.screen.blit(self.title_surf,self.title_rect)
+                self.menu_surf = self.menu_font.render(self.menu_text,False,"White")
+                self.menu_rect = self.menu_surf.get_rect(center = (320,200))
+                self.screen.blit(self.menu_surf,self.menu_rect)
+                self.left_player_rect.center = (30,180)
+                self.right_player_rect.center = (610,180)
+                self.left_score = 0
+                self.right_score = 0
 
             pygame.display.update()
             self.clock.tick(60)
