@@ -46,7 +46,7 @@ class Game:
         #Ball class
         global ball
         ball = Ball(self.ball_surf,self.ball_rect)
-        ball.set_angle()
+        ball.start_args()
 
 
     def run(self):
@@ -59,7 +59,6 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         self.active = True
-                        print(self.active)
                                 
             if self.active:
                 keys = pygame.key.get_pressed()
@@ -95,10 +94,14 @@ class Game:
                 ball.movement()
                     
                 #Ball collision with players
-                if self.ball_rect.colliderect(self.right_player_rect):
+                if self.ball_rect.colliderect(self.left_player_rect):
+                    self.left_dist = self.ball_rect.midleft[1] - self.left_player_rect.topleft[1]
+                    ball.set_args(self.left_dist)
                     ball.change_direc()
 
-                if self.ball_rect.colliderect(self.left_player_rect):
+                if self.ball_rect.colliderect(self.right_player_rect):
+                    self.right_dist = self.ball_rect.midright[1] - self.right_player_rect.topleft[1]
+                    ball.set_args(self.right_dist)
                     ball.change_direc()
                 
                 #Ball collision with "Wall"
@@ -112,15 +115,12 @@ class Game:
                     self.left_score += 1
                     self.ball_rect.center = (320,randint(10,350))
                     ball.change_direc()
-                    ball.set_angle()
+                    ball.start_args()
                 if self.ball_rect.x < -20:
                     self.right_score +=1
                     self.ball_rect.center = (320,randint(10,350))
                     ball.change_direc()
-                    ball.set_angle()
-
-                #Rects in the middle
-                pygame.draw.rect(self.screen, "grey", pygame.Rect(0,0,10,10))
+                    ball.start_args()
 
                 if self.left_score == 5:
                     self.active = False
