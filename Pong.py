@@ -94,15 +94,20 @@ class Game:
                 ball.movement()
                     
                 #Ball collision with players
-                if self.ball_rect.colliderect(self.left_player_rect):
+                count = 0
+                if self.left_player_rect.colliderect(self.ball_rect):
                     self.left_dist = self.ball_rect.midleft[1] - self.left_player_rect.topleft[1]
+                    print(f"Distance Right: {self.left_dist}")
                     ball.set_args(self.left_dist)
-                    ball.change_direc()
+                    ball.direc_right()
+                    
 
-                if self.ball_rect.colliderect(self.right_player_rect):
+                if self.right_player_rect.colliderect(self.ball_rect):
                     self.right_dist = self.ball_rect.midright[1] - self.right_player_rect.topleft[1]
+                    print(f"Distance right: {self.right_dist}")
                     ball.set_args(self.right_dist)
-                    ball.change_direc()
+                    ball.direc_left()
+
                 
                 #Ball collision with "Wall"
                 if self.ball_rect.bottom >= 360:
@@ -114,12 +119,12 @@ class Game:
                 if self.ball_rect.x > 660:
                     self.left_score += 1
                     self.ball_rect.center = (320,randint(10,350))
-                    ball.change_direc()
+                    ball.direc_left()
                     ball.start_args()
                 if self.ball_rect.x < -20:
                     self.right_score +=1
                     self.ball_rect.center = (320,randint(10,350))
-                    ball.change_direc()
+                    ball.direc_right()
                     ball.start_args()
 
                 if self.left_score == 5:

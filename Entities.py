@@ -22,17 +22,29 @@ class Ball(Player):
         self.ball_rect = ball_rect
 
     def start_args(self):
-        self.angle = randint(2,7)
-        self.speed = 9 - self.angle
+        self.angle = randint(1,3)
         self.up_down = randint(0,1)
+        self.speed = 5 - self.angle
 
     def set_args(self,collidepoint):
-        angle_iter = 8
+        count = 1
+        angle_iter = 4.0
         for dist in range(0,91,9):
+            if count <= 4:
+                angle_iter -= 0.8
+                self.up_down = 1
+            elif count > 4:
+                angle_iter += 0.8
+                self.up_down = 0
+            count += 1
             if dist < collidepoint < dist + 9:
                 self.angle = angle_iter
-            angle_iter -= 1.6
+                print(f"Count: {count}")
+                break
         self.speed = 8 - self.angle
+        print(f"Speed: {self.speed}")
+        print(f"Angle: {self.angle}")
+        print(f"up or down: {self.up_down}")
 
     def change_up_down(self):
         if self.up_down == 1:
@@ -54,8 +66,8 @@ class Ball(Player):
             else:
                 self.ball_rect.y += self.angle
 
-    def change_direc(self):
-        if self.direction == "right":
-            self.direction = "left"
-        elif self.direction == "left":
-            self.direction = "right"
+    def direc_right(self):
+        self.direction = "right"
+    
+    def direc_left(self):
+        self.direction = "left"
